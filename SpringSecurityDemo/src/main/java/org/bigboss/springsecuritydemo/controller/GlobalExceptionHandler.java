@@ -2,7 +2,7 @@ package org.bigboss.springsecuritydemo.controller;
 
 import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
-import org.bigboss.springsecuritydemo.controller.exception.MemberException;
+import org.bigboss.springsecuritydemo.controller.exception.ApiException;
 import org.bigboss.springsecuritydemo.model.CommonResult;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MemberException.class)
+    @ExceptionHandler(ApiException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public CommonResult<?> handleException(MemberException e) {
+    public CommonResult<?> handleException(ApiException e) {
         return CommonResult.failed(400, e.getMessage());
     }
 

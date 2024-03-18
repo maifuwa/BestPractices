@@ -2,10 +2,12 @@ package org.bigboss.springsecuritydemo.server.impl;
 
 import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
-import org.bigboss.springsecuritydemo.controller.exception.MemberException;
+import org.bigboss.springsecuritydemo.controller.exception.ApiException;
 import org.bigboss.springsecuritydemo.domain.Member;
 import org.bigboss.springsecuritydemo.domain.MemberDetails;
+import org.bigboss.springsecuritydemo.domain.Role;
 import org.bigboss.springsecuritydemo.repository.MemberRepository;
+import org.bigboss.springsecuritydemo.repository.RoleRepository;
 import org.bigboss.springsecuritydemo.server.MemberServer;
 import org.bigboss.springsecuritydemo.server.RedisServer;
 import org.bigboss.springsecuritydemo.util.JwtUtil;
@@ -16,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,6 +34,9 @@ public class MemberServerImpl implements MemberServer {
     private MemberRepository memberRepository;
 
     @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
     @Lazy
     private PasswordEncoder passwordEncoder;
 
@@ -40,18 +46,20 @@ public class MemberServerImpl implements MemberServer {
     @Override
     public Member register(String username, String password) {
         memberRepository.findByUsername(username).ifPresent(m -> {
-            throw new MemberException("用户已存在");
+            throw new ApiException("用户已存在");
         });
+        Set<Role> roles = Set.of(roleRepository.findAllByName("USER"));
         Member member = Member.builder()
                 .username(username)
                 .password(passwordEncoder.encode(password))
+                .roles(roles)
                 .build();
         return memberRepository.save(member);
     }
 
     @Override
     public Member info(String username) {
-        return memberRepository.findByUsername(username).orElseThrow(() -> new MemberException("用户不存在"));
+        return memberRepository.findByUsername(username).orElseThrow(() -> new ApiException("用户不存在"));
     }
 
     @Override
@@ -62,7 +70,7 @@ public class MemberServerImpl implements MemberServer {
 
     @Override
     public String buildToken(String username) {
-        Member member = memberRepository.findByUsername(username).orElseThrow(() -> new MemberException("用户不存在"));
+        Member member = memberRepository.findByUsername(username).orElseThrow(() -> new ApiException("用户不存在"));
         return JwtUtil.generateToken(member.getId(), member.getUsername());
     }
 
@@ -77,10 +85,10 @@ public class MemberServerImpl implements MemberServer {
         try {
             id = JwtUtil.getId(token);
         } catch (JwtException e) {
-            throw new MemberException(e.getMessage());
+            throw new ApiException(e.getMessage());
         }
         blackToken(token);
-        Member member = memberRepository.findById(id).orElseThrow(() -> new MemberException("用户不存在"));
+        Member member = memberRepository.findById(id).orElseThrow(() -> new ApiException("用户不存在"));
         return JwtUtil.generateToken(member.getId(), member.getUsername());
     }
 }

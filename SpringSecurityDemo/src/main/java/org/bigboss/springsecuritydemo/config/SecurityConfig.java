@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -52,6 +51,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((config) -> config
                         .requestMatchers("/nosecurity/**").permitAll()
                         .requestMatchers("/member/register").permitAll()
+                        .requestMatchers("/member/hello").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -91,7 +91,6 @@ public class SecurityConfig {
                             this.exceptionHandling(response, accessDeniedException);
                         })
                 )
-                .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, AuthorizationFilter.class);

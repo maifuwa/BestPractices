@@ -1,16 +1,12 @@
 package org.bigboss.springsecuritydemo;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.*;
 import lombok.extern.slf4j.Slf4j;
 import org.bigboss.springsecuritydemo.domain.Member;
-import org.bigboss.springsecuritydemo.domain.Role;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.Resource;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
@@ -57,7 +53,7 @@ public class JwtTest {
     @Test
     public void testToken() {
         Member member = Member.builder()
-                .id(1L)
+                .id(1)
                 .username("bigboss")
                 .password("123456")
                 // .roles(Set.of(new Role(1, "admin"), new Role(2, "user")))

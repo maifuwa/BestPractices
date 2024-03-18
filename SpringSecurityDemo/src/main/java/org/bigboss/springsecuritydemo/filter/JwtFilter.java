@@ -5,7 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.bigboss.springsecuritydemo.controller.exception.MemberException;
+import org.bigboss.springsecuritydemo.controller.exception.ApiException;
 import org.bigboss.springsecuritydemo.domain.MemberDetails;
 import org.bigboss.springsecuritydemo.repository.MemberRepository;
 import org.bigboss.springsecuritydemo.server.RedisServer;
@@ -48,7 +48,7 @@ public class JwtFilter extends OncePerRequestFilter {
             }
             MemberDetails memberDetails = memberRepository.findByUsername(username)
                     .map(MemberDetails::new)
-                    .orElseThrow(() -> new MemberException("用户不存在"));
+                    .orElseThrow(() -> new ApiException("用户不存在"));
 
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             Authentication authentication = new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());

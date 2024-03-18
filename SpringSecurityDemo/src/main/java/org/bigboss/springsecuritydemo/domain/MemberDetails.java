@@ -5,12 +5,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author: maifuwa
  * @date: 2024/3/17 下午7:40
- * @description:
+ * @description: 会员详情封装
  */
 public class MemberDetails implements UserDetails {
 
@@ -22,7 +21,7 @@ public class MemberDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("TEST"));
+        return member.getRoles().stream().map(Role::getName).map(SimpleGrantedAuthority::new).toList();
     }
 
     @Override

@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @description:
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class MemberException extends RuntimeException {
+public class ApiException extends RuntimeException {
 
-        public MemberException(String message) {
+        public ApiException(String message) {
             super(message);
         }
 }
