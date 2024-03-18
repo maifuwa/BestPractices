@@ -19,8 +19,8 @@ public record CommonResult<T>(int code, String message, T data) {
         return CommonResult.failed(500, "请求失败,请稍后再试", null);
     }
 
-    public static <T> CommonResult<T> failed(String message) {
-        return CommonResult.failed(500, message, null);
+    public static <T> CommonResult<T> failed(int code, String message) {
+        return CommonResult.failed(code, message, null);
     }
 
     public static <T> CommonResult<T> failed(int code, String message, T data) {

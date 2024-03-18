@@ -21,6 +21,7 @@ import org.springframework.security.web.access.intercept.AuthorizationFilter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+
 /**
  * @author: maifuwa
  * @date: 2024/3/17 下午7:46
@@ -31,6 +32,9 @@ public class SecurityConfig {
 
     @Autowired
     private MemberServer MemberServer;
+
+    @Autowired
+    private JwtFilter jwtFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -55,6 +59,11 @@ public class SecurityConfig {
                         .loginProcessingUrl("/api/login").permitAll()
                         .successHandler((request, response, authentication) -> {
                             // 登录成功处理,申请token返回
+                            String token = MemberServer.buildToken(authentication.getName());
+                            response.setContentType("application/json; charset=UTF-8");
+                            PrintWriter writer = response.getWriter();
+                            writer.write(JsonUtil.toJson(CommonResult.success(token)));
+                            writer.flush();
                         })
                 )
                 .logout(logout -> logout
@@ -63,9 +72,15 @@ public class SecurityConfig {
                         // 客制退出登录处理
                         .logoutSuccessHandler((request, response, authentication) -> {
                             // 退出登录处理，清除token
+                            String token = request.getHeader("Authorization");
+                            MemberServer.blackToken(token);
+                            response.setContentType("application/json; charset=UTF-8");
+                            PrintWriter writer = response.getWriter();
+                            writer.write(JsonUtil.toJson(CommonResult.success("退出登录成功")));
+                            writer.flush();
                         })
                 )
-                 // 客制异常处理
+                // 客制异常处理
                 .exceptionHandling((exceptions) -> exceptions
                         .authenticationEntryPoint((request, response, authException) -> {
                             // 向浏览器请求登录凭证
@@ -79,7 +94,7 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new JwtFilter(), AuthorizationFilter.class);
+                .addFilterBefore(jwtFilter, AuthorizationFilter.class);
         return http.build();
     }
 
@@ -88,7 +103,7 @@ public class SecurityConfig {
         PrintWriter writer = response.getWriter();
         if (exception instanceof AccessDeniedException) {
             writer.write(JsonUtil.toJson(CommonResult.accessDenied()));
-        }else {
+        } else {
             writer.write(JsonUtil.toJson(CommonResult.unauthorized()));
         }
         writer.flush();

@@ -14,24 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/nosecurity")
 public class NoneSecurityController {
 
-    @GetMapping("/")
-    public String doNoSecurity() {
-        return "No Security Get";
-    }
-
-    @PostMapping("/")
-    public String postNoSecurity() {
-        return "No Security Post";
-    }
-
     @GetMapping("/hello")
     public String doHello() {
         return "Hello";
     }
 
-
-    @GetMapping("/exception")
-    public String doException() {
-        return "Exception";
-    }
 }

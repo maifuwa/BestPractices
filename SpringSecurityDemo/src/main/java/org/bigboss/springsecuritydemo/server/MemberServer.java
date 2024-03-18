@@ -18,7 +18,9 @@ public interface MemberServer {
 
     UserDetails loadUserByUsername(String username);
 
-    String getToken(String username, String password);
+    String buildToken(String username);
+
+    void blackToken(String token);
 
     String refreshToken(String token);
 }

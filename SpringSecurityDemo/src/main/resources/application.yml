@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: SpringSecurityDemo
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: true
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 0
+      timeout: 1000ms
+      password:    # 没有就不用写
+      lettuce:
+        pool:
+          max-active: 8   # 连接池最大连接数
+          max-idle: 8     # 连接池最大空闲连接数
+          min-idle: 0     # 连接池最小空闲连接数
+          max-wait: -1ms  # 连接池最大阻塞时间， 复制表示没有限制

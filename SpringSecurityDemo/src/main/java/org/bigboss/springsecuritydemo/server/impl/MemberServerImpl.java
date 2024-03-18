@@ -1,18 +1,22 @@
 package org.bigboss.springsecuritydemo.server.impl;
 
+import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
+import org.bigboss.springsecuritydemo.controller.exception.MemberException;
 import org.bigboss.springsecuritydemo.domain.Member;
 import org.bigboss.springsecuritydemo.domain.MemberDetails;
 import org.bigboss.springsecuritydemo.repository.MemberRepository;
 import org.bigboss.springsecuritydemo.server.MemberServer;
+import org.bigboss.springsecuritydemo.server.RedisServer;
+import org.bigboss.springsecuritydemo.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author: maifuwa
@@ -30,23 +34,24 @@ public class MemberServerImpl implements MemberServer {
     @Lazy
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private RedisServer redisServer;
+
     @Override
     public Member register(String username, String password) {
+        memberRepository.findByUsername(username).ifPresent(m -> {
+            throw new MemberException("用户已存在");
+        });
         Member member = Member.builder()
                 .username(username)
                 .password(passwordEncoder.encode(password))
                 .build();
-        ExampleMatcher matcher = ExampleMatcher.matching()
-                .withMatcher("username", ExampleMatcher.GenericPropertyMatchers.exact())
-                .withIgnorePaths("id");
-        memberRepository.findOne(Example.of(member, matcher))
-                .ifPresent(m -> {throw new RuntimeException("用户已存在");});
         return memberRepository.save(member);
     }
 
     @Override
     public Member info(String username) {
-        return memberRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("用户不存在"));
+        return memberRepository.findByUsername(username).orElseThrow(() -> new MemberException("用户不存在"));
     }
 
     @Override
@@ -56,12 +61,26 @@ public class MemberServerImpl implements MemberServer {
     }
 
     @Override
-    public String getToken(String username, String password) {
-        return null;
+    public String buildToken(String username) {
+        Member member = memberRepository.findByUsername(username).orElseThrow(() -> new MemberException("用户不存在"));
+        return JwtUtil.generateToken(member.getId(), member.getUsername());
+    }
+
+    @Override
+    public void blackToken(String token) {
+        redisServer.setWithExp(token, "black", JwtUtil.getRemainingExp(token), TimeUnit.MILLISECONDS);
     }
 
     @Override
     public String refreshToken(String token) {
-        return null;
+        Integer id;
+        try {
+            id = JwtUtil.getId(token);
+        } catch (JwtException e) {
+            throw new MemberException(e.getMessage());
+        }
+        blackToken(token);
+        Member member = memberRepository.findById(id).orElseThrow(() -> new MemberException("用户不存在"));
+        return JwtUtil.generateToken(member.getId(), member.getUsername());
     }
 }
