@@ -112,7 +112,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
 > `UserDetailsService`、`UserDetails`与`Authentication`的关系：`UserDetails`由`UserDetailsService`返回。`DaoAuthenticationProvider`验证`UserDetails`，然后返回一个`Authentication`，该`Authentication`的委托人principal是由配置的`UserDetailsService`返回的。
 
 #### 授权
-~~有时间再填坑~~
+~~有时间再填坑,还有会话管理、漏洞防护、OAuth2~~
 
 #### 注销
 默认情况下，Spring Security 会建立一个`/logout`端点，所以不需要额外的代码

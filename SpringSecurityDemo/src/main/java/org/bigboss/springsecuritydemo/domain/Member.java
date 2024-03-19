@@ -29,7 +29,7 @@ public class Member extends BaseEntity implements Serializable {
     private String username;
 
     @JsonIgnore
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 80)
     private String password;
 
     @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
