@@ -25,9 +25,11 @@ public class Member extends BaseEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false, unique = true, length = 20)
     private String username;
 
     @JsonIgnore
+    @Column(nullable = false, length = 50)
     private String password;
 
     @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)

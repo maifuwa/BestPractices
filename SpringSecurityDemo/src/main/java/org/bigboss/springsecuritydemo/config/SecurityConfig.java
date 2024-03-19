@@ -69,7 +69,6 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         // 客制退出登录url
                         .logoutUrl("/api/logout")
-                        // 客制退出登录处理
                         .logoutSuccessHandler((request, response, authentication) -> {
                             // 退出登录处理，清除token
                             String token = request.getHeader("Authorization");

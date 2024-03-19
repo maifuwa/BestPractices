@@ -5,9 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.bigboss.springsecuritydemo.controller.exception.ApiException;
-import org.bigboss.springsecuritydemo.domain.MemberDetails;
-import org.bigboss.springsecuritydemo.repository.MemberRepository;
+import org.bigboss.springsecuritydemo.server.MemberServer;
 import org.bigboss.springsecuritydemo.server.RedisServer;
 import org.bigboss.springsecuritydemo.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -29,7 +28,7 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
-    private MemberRepository memberRepository;
+    private MemberServer memberServer;
 
     @Autowired
     private RedisServer redisServer;
@@ -46,12 +45,10 @@ public class JwtFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
-            MemberDetails memberDetails = memberRepository.findByUsername(username)
-                    .map(MemberDetails::new)
-                    .orElseThrow(() -> new ApiException("用户不存在"));
+            UserDetails userDetails = memberServer.loadUserByUsername(username);
 
             SecurityContext context = SecurityContextHolder.createEmptyContext();
-            Authentication authentication = new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
+            Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, userDetails.getAuthorities());
             context.setAuthentication(authentication);
             SecurityContextHolder.setContext(context);
 
