@@ -1,0 +1,14 @@
+services:
+  mysql:
+    image: mysql:8.0.36
+    container_name: spring-security-demo-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: spring_security_demo
+    ports:
+      - "3306:3306"
+  redis:
+    image: redis:7.2.4
+    container_name: spring-security-demo-redis
+    ports:
+      - "6379:6379"

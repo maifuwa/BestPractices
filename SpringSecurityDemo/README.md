@@ -49,7 +49,7 @@ SpringSecurity使用`Security Filter`来进行认证、授权、漏洞保护等�
 
 图为`Security Filter`与`Servlet filter`的相对位置，上述`Filter`在图中的SecurityFilterChain中
 
-![Security Filter与Servlet filter的相对位置，来源：springdoc.cn](images/SecurityFilter.png)
+![Security Filter与Servlet filter的相对位置，来源：springdoc.cn](doc/images/SecurityFilter.png)
 
 #### ExceptionTranslationFilter
 SpringSecurity将用户重定向到登录页面流程：
@@ -60,7 +60,7 @@ SpringSecurity将用户重定向到登录页面流程：
 
 图为`ExceptionTranslationFilter`的处理机制
 
-![ExceptionTranslationFilter处理机制，来源：springdoc.cn](images/ExceptionTranslationFilter.png)
+![ExceptionTranslationFilter处理机制，来源：springdoc.cn](doc/images/ExceptionTranslationFilter.png)
 
 因此我们只需要配置ExceptionTranslationFilter回调的`AuthenticationEntryPoint`和`AccessDeniedHandler`即可自定义认证失败后的处理流程。
 SpringSecurity允许我们通过`HttpSecurity`的`exceptionHandling`来实现
