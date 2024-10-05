@@ -1,0 +1,9 @@
+services:
+  mysql:
+    image: mysql:8.0.36
+    container_name: quartz-demo-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: quartz_demo
+    ports:
+      - "3306:3306"

@@ -1,38 +1,27 @@
 package org.bigboss.springsecuritydemo.util;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
+ * @description:
  * @author: maifuwa
- * @date: 2024/3/17 下午7:37
- * @description: Json工具类
+ * @date: 2024/10/7 9:27
  */
 @Slf4j
+@Component
 public class JsonUtil {
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static ObjectMapper objectMapper;
 
-    // 日期格式化
-    private static final String STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-    static {
-        //对象的所有字段全部列入
-        OBJECT_MAPPER.setSerializationInclusion(JsonInclude.Include.ALWAYS);
-        //取消默认转换timestamps形式
-        OBJECT_MAPPER.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        //忽略空Bean转json的错误
-        OBJECT_MAPPER.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        //所有的日期格式都统一为以下的样式，即yyyy-MM-dd HH:mm:ss
-        OBJECT_MAPPER.setDateFormat(new SimpleDateFormat(STANDARD_FORMAT));
-        //忽略 在json字符串中存在，但是在java对象中不存在对应属性的情况。防止错误
-        OBJECT_MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    @Autowired
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        JsonUtil.objectMapper = objectMapper;
     }
 
     /**
@@ -46,9 +35,9 @@ public class JsonUtil {
             return null;
         }
         try {
-            return obj instanceof String ? (String) obj : OBJECT_MAPPER.writeValueAsString(obj);
+            return obj instanceof String ? (String) obj : objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            log.warn("Parse Object to String error : {}", e.getMessage());
+            log.error("Parse Object to String error : {}", e.getMessage());
             return null;
         }
     }
@@ -66,11 +55,30 @@ public class JsonUtil {
             return null;
         }
         try {
-            return clazz.equals(String.class) ? (T) str : OBJECT_MAPPER.readValue(str, clazz);
+            return clazz.equals(String.class) ? clazz.cast(str) : objectMapper.readValue(str, clazz);
         } catch (Exception e) {
-            log.warn("Parse String to Object error : {}", e.getMessage());
+            log.error("Parse String to Object error : {}", e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * 字符串转换为List
+     *
+     * @param str   要转换的字符串
+     * @param clazz 自定义对象的class对象
+     * @param <T>   自定义对象
+     * @return List
+     */
+    public static <T> List<T> toList(String str, Class<T> clazz) {
+        if (str == null || str.isBlank() || clazz == null) {
+            return null;
+        }
+        try {
+            return objectMapper.readValue(str, objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
+        } catch (Exception e) {
+            log.error("Parse String to List error : {}", e.getMessage());
             return null;
         }
     }
 }
-
