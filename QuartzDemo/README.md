@@ -33,3 +33,4 @@ spring:
           threadPool:
             threadCount: 5
 ```
+代码环节直接注入`Spring`维护的`Scheduler`，增删改查任务信息即可
