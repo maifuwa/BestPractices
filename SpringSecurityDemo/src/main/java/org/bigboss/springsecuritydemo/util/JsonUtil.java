@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * @description:
  * @author: maifuwa
  * @date: 2024/10/7 9:27
+ * @description: json解析工具类
  */
 @Slf4j
 @Component

@@ -24,4 +24,8 @@ public class SpringUtil {
     public static <T> T getBean(Class<T> clazz) {
         return applicationContext.getBean(clazz);
     }
+
+    public static Class<?> getBeanClass(String name) {
+        return applicationContext.getType(name);
+    }
 }

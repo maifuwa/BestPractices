@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>com.bigboss</groupId>
-    <artifactId>UsedRAMJobStore</artifactId>
+    <artifactId>UseRAMJobStore</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>UsedRAMJobStore</name>
     <description>UsedRAMJobStore</description>

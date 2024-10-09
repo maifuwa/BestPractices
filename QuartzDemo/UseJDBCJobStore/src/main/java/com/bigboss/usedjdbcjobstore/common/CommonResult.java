@@ -3,9 +3,9 @@ package com.bigboss.usedjdbcjobstore.common;
 import org.springframework.http.HttpStatus;
 
 /**
- * @description:
  * @author: maifuwa
  * @date: 2024/10/7 10:56
+ * @description: 通用返回对象
  */
 public record CommonResult<T>(int code, String message, T data) {
 
