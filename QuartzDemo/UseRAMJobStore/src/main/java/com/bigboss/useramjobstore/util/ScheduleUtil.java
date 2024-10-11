@@ -1,5 +1,6 @@
 package com.bigboss.useramjobstore.util;
 
+import com.bigboss.useramjobstore.domain.JobDetails;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,6 +34,10 @@ public class ScheduleUtil {
                 .build();
 
         scheduler.scheduleJob(jobDetail, trigger);
+    }
+
+    public static void addJob(JobDetails jobDetails) throws SchedulerException {
+        addJob(jobDetails.getJobClassName(), jobDetails.getJobName(), jobDetails.getJobGroup(), jobDetails.getCronExpression(), jobDetails.getJobData());
     }
 
     public static void deleteJob(String jobName, String jobGroup) throws SchedulerException {

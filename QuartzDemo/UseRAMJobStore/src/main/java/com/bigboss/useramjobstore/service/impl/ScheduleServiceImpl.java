@@ -1,6 +1,7 @@
 package com.bigboss.useramjobstore.service.impl;
 
 import com.bigboss.useramjobstore.common.ConcisePage;
+import com.bigboss.useramjobstore.common.GlobalException;
 import com.bigboss.useramjobstore.domain.JobDetails;
 import com.bigboss.useramjobstore.dto.JobDetailsParam;
 import com.bigboss.useramjobstore.dto.JobDetailsResult;
@@ -9,6 +10,7 @@ import com.bigboss.useramjobstore.repository.JobDetailsRepository;
 import com.bigboss.useramjobstore.service.ScheduleService;
 import com.bigboss.useramjobstore.util.ScheduleUtil;
 import com.bigboss.useramjobstore.util.SpringUtil;
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,11 +34,22 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private final JobDetailsRepository jobDetailsRepository;
 
+    @PostConstruct
+    public void init() {
+        jobDetailsRepository.findAll().forEach(jobDetails -> {
+            try {
+                ScheduleUtil.addJob(jobDetails);
+            } catch (SchedulerException e) {
+                throw GlobalException.internalServerError("初始化定时任务失败", e);
+            }
+        });
+    }
+
     @Override
     public void addJob(JobDetailsParam jobDetailsParam) throws SchedulerException {
         JobDetails jobDetails = SpringUtil.copyBean(jobDetailsParam, JobDetails.class);
         jobDetailsRepository.save(jobDetails);
-        ScheduleUtil.addJob(jobDetails.getJobClassName(), jobDetails.getJobName(), jobDetails.getJobGroup(), jobDetails.getCronExpression(), jobDetails.getJobData());
+        ScheduleUtil.addJob(jobDetails);
     }
 
     @Override
@@ -51,7 +64,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         ScheduleUtil.deleteJob(jobDetails.getJobName(), jobDetails.getJobGroup());
         updateJobDetails(jobDetails, jobDetailsUpdateParam);
         jobDetailsRepository.save(jobDetails);
-        ScheduleUtil.addJob(jobDetails.getJobClassName(), jobDetails.getJobName(), jobDetails.getJobGroup(), jobDetails.getCronExpression(), jobDetails.getJobData());
+        ScheduleUtil.addJob(jobDetails);
     }
 
     private void updateJobDetails(JobDetails jobDetails, JobDetailsUpdateParam jobDetailsUpdateParam) {
