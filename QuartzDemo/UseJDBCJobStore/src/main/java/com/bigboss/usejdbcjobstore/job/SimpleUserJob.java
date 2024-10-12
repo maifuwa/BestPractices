@@ -28,5 +28,6 @@ public class SimpleUserJob implements Job {
         user.setAge(18);
         userRepository.save(user);
         log.info("user id:{}, JobId:{}", user.getId(), this.hashCode());
+        throw new RuntimeException("测试异常");
     }
 }

@@ -3,7 +3,9 @@ package com.bigboss.usejdbcjobstore.job;
 import com.bigboss.usejdbcjobstore.domain.User;
 import com.bigboss.usejdbcjobstore.repository.UserRepository;
 import com.bigboss.usejdbcjobstore.util.JsonUtil;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
@@ -17,16 +19,19 @@ import org.springframework.stereotype.Component;
  * @description: 简单任务_持久化用户_带JobData
  */
 @Slf4j
+@Setter
 @Component
 @RequiredArgsConstructor
 public class SimpleUserJobWhitJobData extends QuartzJobBean {
 
     private final UserRepository userRepository;
 
+    private String userStr;
+
     @SneakyThrows
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-        User user = JsonUtil.toObject((String) context.getMergedJobDataMap().get("user"), User.class);
+        User user = JsonUtil.toObject(userStr, User.class);
         userRepository.save(user);
         log.info("user id:{}, JobId:{}", user.getId(), this.hashCode());
     }
