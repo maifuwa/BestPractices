@@ -1,10 +1,10 @@
 # SpringSecurity的最佳实践
 
 ## 项目依赖
-- SpringBoot 3.1.9
+- SpringBoot 3.3.4
 - jjwt 0.12.5
-- H2数据库
-- Redis
+- mysql 8.0.36
+- redis 7.2.4
 
 ## 所用芝士介绍
 
