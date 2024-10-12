@@ -37,6 +37,9 @@ public class JobDetails {
     @Column(nullable = false)
     private String cronExpression;
 
+    @Column(nullable = false, columnDefinition = "tinyint(1) default 0")
+    private Boolean paused = false;
+
     private String jobData;
 
     private String jobDescription;

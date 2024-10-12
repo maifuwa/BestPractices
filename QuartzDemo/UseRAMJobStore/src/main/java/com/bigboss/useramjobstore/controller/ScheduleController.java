@@ -5,6 +5,7 @@ import com.bigboss.useramjobstore.dto.JobDetailsParam;
 import com.bigboss.useramjobstore.dto.JobDetailsUpdateParam;
 import com.bigboss.useramjobstore.service.ScheduleService;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.quartz.SchedulerException;
 import org.springframework.validation.annotation.Validated;
@@ -33,6 +34,11 @@ public class ScheduleController {
     public CommonResult<?> delete(@NotBlank String jobName, @NotBlank String jobGroup) throws SchedulerException {
         scheduleService.deleteJob(jobName, jobGroup);
         return CommonResult.success("任务删除成功");
+    }
+
+    @GetMapping("/pause/{status}")
+    public CommonResult<?> pause(@NotBlank String jobName, @NotBlank String jobGroup, @PathVariable @NotNull Boolean status) throws SchedulerException {
+        return CommonResult.success(scheduleService.pauseJob(jobName, jobGroup, status));
     }
 
     @PostMapping("/update")

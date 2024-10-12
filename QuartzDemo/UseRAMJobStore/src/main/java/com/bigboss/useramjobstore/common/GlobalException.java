@@ -35,7 +35,7 @@ public class GlobalException extends RuntimeException {
     }
 
     public static GlobalException internalServerError(String message, Throwable cause) {
-        return new GlobalException(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, cause);
+        return new GlobalException(message, cause);
     }
 
     public static GlobalException badRequest(String message, Throwable cause) {

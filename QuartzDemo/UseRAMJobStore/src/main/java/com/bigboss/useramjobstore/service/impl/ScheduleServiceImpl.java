@@ -10,6 +10,7 @@ import com.bigboss.useramjobstore.repository.JobDetailsRepository;
 import com.bigboss.useramjobstore.service.ScheduleService;
 import com.bigboss.useramjobstore.util.ScheduleUtil;
 import com.bigboss.useramjobstore.util.SpringUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -36,13 +37,16 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @PostConstruct
     public void init() {
-        jobDetailsRepository.findAll().forEach(jobDetails -> {
-            try {
-                ScheduleUtil.addJob(jobDetails);
-            } catch (SchedulerException e) {
-                throw GlobalException.internalServerError("初始化定时任务失败", e);
-            }
-        });
+        jobDetailsRepository.findAll()
+                .stream()
+                .filter(JobDetails::getPaused)
+                .forEach(jobDetails -> {
+                    try {
+                        ScheduleUtil.addJob(jobDetails);
+                    } catch (SchedulerException e) {
+                        throw GlobalException.internalServerError("初始化定时任务失败", e);
+                    }
+                });
     }
 
     @Override
@@ -56,6 +60,24 @@ public class ScheduleServiceImpl implements ScheduleService {
     public void deleteJob(String jobName, String jobGroup) throws SchedulerException {
         jobDetailsRepository.deleteByJobNameAndJobGroup(jobName, jobGroup);
         ScheduleUtil.deleteJob(jobName, jobGroup);
+    }
+
+    @Override
+    public String pauseJob(String jobName, String jobGroup, Boolean status) throws SchedulerException {
+        jobDetailsRepository.updatePausedByJobNameAndJobGroup(status, jobName, jobGroup);
+        if (status) {
+            ScheduleUtil.pauseJob(jobName, jobGroup);
+            return "任务暂停成功";
+        }
+
+        if (ScheduleUtil.isJobExist(jobName, jobGroup)) {
+            ScheduleUtil.resumeJob(jobName, jobGroup);
+            return "任务恢复成功";
+        }
+
+        JobDetails jobDetails = jobDetailsRepository.findByJobNameAndJobGroup(jobName, jobGroup);
+        ScheduleUtil.addJob(jobDetails);
+        return "任务恢复成功";
     }
 
     @Override
