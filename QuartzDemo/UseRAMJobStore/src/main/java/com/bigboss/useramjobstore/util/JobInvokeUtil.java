@@ -35,6 +35,7 @@ public class JobInvokeUtil {
         String params = invokeTarget.substring(invokeTarget.indexOf("(") + 1, invokeTarget.indexOf(")"));
         return Stream.of(params.split(","))
                 .filter(StringUtils::hasText)
+                .map(String::trim)
                 .map(JobInvokeUtil::parseParam)
                 .toArray();
     }

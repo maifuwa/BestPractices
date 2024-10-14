@@ -3,6 +3,7 @@ package com.bigboss.useramjobstore.util;
 import com.bigboss.useramjobstore.domain.JobDetails;
 import com.bigboss.useramjobstore.job.base.QuartzDisallowConcurrentExecution;
 import com.bigboss.useramjobstore.job.base.QuartzJobExecution;
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
  * @date: 2024/10/11 11:26
  * @description:
  */
+@Slf4j
 @Component
 public class ScheduleUtil {
 
@@ -38,6 +40,7 @@ public class ScheduleUtil {
                 .build();
 
         scheduler.scheduleJob(jobDetail, trigger);
+        log.info("定时任务添加成功：{}", jobDetail.getKey());
     }
 
     public static void addJob(JobDetails jobDetails) throws SchedulerException {
@@ -45,7 +48,9 @@ public class ScheduleUtil {
     }
 
     public static void deleteJob(String jobName, String jobGroup) throws SchedulerException {
-        scheduler.deleteJob(new JobKey(jobName, jobGroup));
+        JobKey jobKey = new JobKey(jobName, jobGroup);
+        scheduler.deleteJob(jobKey);
+        log.info("定时任务删除成功：{}", jobKey);
     }
 
     public static void pauseJob(String jobName, String jobGroup) throws SchedulerException {

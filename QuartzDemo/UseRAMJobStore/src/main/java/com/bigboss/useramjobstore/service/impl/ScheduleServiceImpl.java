@@ -10,12 +10,12 @@ import com.bigboss.useramjobstore.repository.JobDetailsRepository;
 import com.bigboss.useramjobstore.service.ScheduleService;
 import com.bigboss.useramjobstore.util.ScheduleUtil;
 import com.bigboss.useramjobstore.util.SpringUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.SchedulerException;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -33,6 +33,7 @@ import java.util.Optional;
 @Transactional
 @Slf4j
 @Service
+@DependsOn("scheduleUtil")
 @RequiredArgsConstructor
 public class ScheduleServiceImpl implements ScheduleService {
 
@@ -40,9 +41,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @PostConstruct
     public void init() {
+        log.info("初始化定时任务");
         jobDetailsRepository.findAll()
                 .stream()
-                .filter(JobDetails::getPaused)
+                .filter(jobDetails -> !jobDetails.getPaused())
                 .forEach(jobDetails -> {
                     try {
                         ScheduleUtil.addJob(jobDetails);

@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import java.lang.reflect.InvocationTargetException;
@@ -24,8 +25,10 @@ public class QuartzDisallowConcurrentExecution extends QuartzJobBean {
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
         try {
             JobInvokeUtil.invokeMethod(invokeTarget);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+        } catch (NoSuchBeanDefinitionException | NoSuchMethodException | IllegalAccessException e) {
             throw new JobExecutionException("invokeTarget 配置错误", e);
+        } catch (InvocationTargetException e) {
+            // aop will handle this exception
         }
     }
 }
