@@ -14,10 +14,6 @@ public class JobDetailsParam {
 
     @NotBlank
     @Length(min = 1, max = 255)
-    private String jobClassName;
-
-    @NotBlank
-    @Length(min = 1, max = 255)
     private String jobName;
 
     @NotBlank
@@ -25,10 +21,13 @@ public class JobDetailsParam {
     private String jobGroup;
 
     @NotBlank
-    private String cronExpression;
+    @Length(min = 1, max = 255)
+    private String invokeTarget;
 
-    private String jobData;
+    @NotBlank
+    private String cronExpression;
 
     private String jobDescription;
 
+    private Boolean concurrent = Boolean.TRUE;
 }

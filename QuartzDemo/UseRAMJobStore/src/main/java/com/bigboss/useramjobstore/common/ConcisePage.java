@@ -8,4 +8,8 @@ import java.util.List;
  * @description:
  */
 public record ConcisePage<T>(List<T> content, int pageNumber, long totalPages) {
+
+    public static <T> ConcisePage<T> of(List<T> content, int pageNumber, long totalPages) {
+        return new ConcisePage<>(content, pageNumber, totalPages);
+    }
 }

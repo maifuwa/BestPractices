@@ -17,15 +17,15 @@ public class JobDetailsUpdateParam {
     @NotBlank
     private String jobGroup;
 
-    private String newJobClassName;
-
     private String newJobName;
 
     private String newJobGroup;
 
+    private String newInvokeTarget;
+
     private String newCronExpression;
 
-    private String newJobData;
-
     private String newJobDescription;
+
+    private Boolean newConcurrent;
 }

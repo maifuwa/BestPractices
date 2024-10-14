@@ -1,15 +1,12 @@
 package com.bigboss.useramjobstore.util;
 
-import com.bigboss.useramjobstore.common.GlobalException;
 import com.bigboss.useramjobstore.domain.JobDetails;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.bigboss.useramjobstore.job.base.QuartzDisallowConcurrentExecution;
+import com.bigboss.useramjobstore.job.base.QuartzJobExecution;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * @author: maifuwa
@@ -26,11 +23,12 @@ public class ScheduleUtil {
         ScheduleUtil.scheduler = scheduler;
     }
 
-    @SuppressWarnings("unchecked")
-    public static void addJob(String jobClassName, String jobName, String jobGroup, String cronExpression, String jobData) throws SchedulerException {
-        JobDetail jobDetail = JobBuilder.newJob((Class<? extends Job>) SpringUtil.getBeanClass(jobClassName))
+    private static void addJob(String jobName, String jobGroup, String invokeTarget, String cronExpression, Boolean concurrent) throws SchedulerException {
+        Class<? extends Job> jobClass = concurrent ? QuartzJobExecution.class : QuartzDisallowConcurrentExecution.class;
+
+        JobDetail jobDetail = JobBuilder.newJob(jobClass)
                 .withIdentity(jobName, jobGroup)
-                .usingJobData(new JobDataMap(jobDataStrToMap(jobData)))
+                .usingJobData("invokeTarget", invokeTarget)
                 .storeDurably()
                 .build();
 
@@ -42,20 +40,8 @@ public class ScheduleUtil {
         scheduler.scheduleJob(jobDetail, trigger);
     }
 
-    private static Map<String, String> jobDataStrToMap(String jobData) {
-        return Optional.ofNullable(jobData)
-                .map(data -> {
-                    try {
-                        return JsonUtil.toMap(data, String.class, String.class);
-                    } catch (JsonProcessingException e) {
-                        throw GlobalException.badRequest("Job data format error", e);
-                    }
-                })
-                .orElse(Collections.emptyMap());
-    }
-
     public static void addJob(JobDetails jobDetails) throws SchedulerException {
-        addJob(jobDetails.getJobClassName(), jobDetails.getJobName(), jobDetails.getJobGroup(), jobDetails.getCronExpression(), jobDetails.getJobData());
+        addJob(jobDetails.getJobName(), jobDetails.getJobGroup(), jobDetails.getInvokeTarget(), jobDetails.getCronExpression(), jobDetails.getConcurrent());
     }
 
     public static void deleteJob(String jobName, String jobGroup) throws SchedulerException {

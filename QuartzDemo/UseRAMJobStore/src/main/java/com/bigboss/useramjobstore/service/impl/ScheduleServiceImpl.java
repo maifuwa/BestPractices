@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
@@ -90,20 +91,23 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     private void updateJobDetails(JobDetails jobDetails, JobDetailsUpdateParam jobDetailsUpdateParam) {
-        if (StringUtils.hasText(jobDetailsUpdateParam.getNewJobClassName())) {
-            jobDetails.setJobClassName(jobDetailsUpdateParam.getNewJobClassName());
-        }
         if (StringUtils.hasText(jobDetailsUpdateParam.getNewJobName())) {
             jobDetails.setJobName(jobDetailsUpdateParam.getNewJobName());
         }
         if (StringUtils.hasText(jobDetailsUpdateParam.getNewJobGroup())) {
             jobDetails.setJobGroup(jobDetailsUpdateParam.getNewJobGroup());
         }
-        if (StringUtils.hasText(jobDetailsUpdateParam.getNewJobData())) {
-            jobDetails.setJobData(jobDetailsUpdateParam.getNewJobData());
+        if (StringUtils.hasText(jobDetailsUpdateParam.getNewInvokeTarget())) {
+            jobDetails.setInvokeTarget(jobDetailsUpdateParam.getNewInvokeTarget());
         }
         if (StringUtils.hasText(jobDetailsUpdateParam.getNewCronExpression())) {
             jobDetails.setCronExpression(jobDetailsUpdateParam.getNewCronExpression());
+        }
+        if (StringUtils.hasText(jobDetailsUpdateParam.getNewJobDescription())) {
+            jobDetails.setJobDescription(jobDetailsUpdateParam.getNewJobDescription());
+        }
+        if (ObjectUtils.isEmpty(jobDetailsUpdateParam.getNewConcurrent())) {
+            jobDetails.setConcurrent(jobDetailsUpdateParam.getNewConcurrent());
         }
     }
 
@@ -111,6 +115,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     public ConcisePage<JobDetailsResult> list(Integer page, Integer size) {
         Page<JobDetailsResult> all = jobDetailsRepository.findAll(PageRequest.of(page, size, Sort.by("id").descending()))
                 .map(jobDetails -> SpringUtil.copyBean(jobDetails, JobDetailsResult.class));
-        return new ConcisePage<>(all.getContent(), all.getNumber(), all.getTotalPages());
+        return ConcisePage.of(all.getContent(), all.getNumber(), all.getTotalPages());
     }
 }
