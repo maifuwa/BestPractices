@@ -1,5 +1,7 @@
 package com.bigboss.useramjobstore.util;
 
+import org.springframework.util.StringUtils;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
@@ -32,6 +34,7 @@ public class JobInvokeUtil {
     public static Object[] getMethodParams(String invokeTarget) {
         String params = invokeTarget.substring(invokeTarget.indexOf("(") + 1, invokeTarget.indexOf(")"));
         return Stream.of(params.split(","))
+                .filter(StringUtils::hasText)
                 .map(JobInvokeUtil::parseParam)
                 .toArray();
     }

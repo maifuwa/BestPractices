@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.Optional;
+
 /**
  * @author: maifuwa
  * @date: 2024/10/11 10:53
@@ -91,24 +93,29 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     private void updateJobDetails(JobDetails jobDetails, JobDetailsUpdateParam jobDetailsUpdateParam) {
-        if (StringUtils.hasText(jobDetailsUpdateParam.getNewJobName())) {
-            jobDetails.setJobName(jobDetailsUpdateParam.getNewJobName());
-        }
-        if (StringUtils.hasText(jobDetailsUpdateParam.getNewJobGroup())) {
-            jobDetails.setJobGroup(jobDetailsUpdateParam.getNewJobGroup());
-        }
-        if (StringUtils.hasText(jobDetailsUpdateParam.getNewInvokeTarget())) {
-            jobDetails.setInvokeTarget(jobDetailsUpdateParam.getNewInvokeTarget());
-        }
-        if (StringUtils.hasText(jobDetailsUpdateParam.getNewCronExpression())) {
-            jobDetails.setCronExpression(jobDetailsUpdateParam.getNewCronExpression());
-        }
-        if (StringUtils.hasText(jobDetailsUpdateParam.getNewJobDescription())) {
-            jobDetails.setJobDescription(jobDetailsUpdateParam.getNewJobDescription());
-        }
-        if (ObjectUtils.isEmpty(jobDetailsUpdateParam.getNewConcurrent())) {
-            jobDetails.setConcurrent(jobDetailsUpdateParam.getNewConcurrent());
-        }
+        Optional.ofNullable(jobDetailsUpdateParam.getNewJobName())
+                .filter(StringUtils::hasText)
+                .ifPresent(jobDetails::setJobName);
+
+        Optional.ofNullable(jobDetailsUpdateParam.getNewJobGroup())
+                .filter(StringUtils::hasText)
+                .ifPresent(jobDetails::setJobGroup);
+
+        Optional.ofNullable(jobDetailsUpdateParam.getNewInvokeTarget())
+                .filter(StringUtils::hasText)
+                .ifPresent(jobDetails::setInvokeTarget);
+
+        Optional.ofNullable(jobDetailsUpdateParam.getNewCronExpression())
+                .filter(StringUtils::hasText)
+                .ifPresent(jobDetails::setCronExpression);
+
+        Optional.ofNullable(jobDetailsUpdateParam.getNewJobDescription())
+                .filter(StringUtils::hasText)
+                .ifPresent(jobDetails::setJobDescription);
+
+        Optional.ofNullable(jobDetailsUpdateParam.getNewConcurrent())
+                .filter(ObjectUtils::isEmpty)
+                .ifPresent(jobDetails::setConcurrent);
     }
 
     @Override

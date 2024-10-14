@@ -35,11 +35,12 @@ public class JobDetails {
     @Column(nullable = false)
     private String cronExpression;
 
+    @Column(columnDefinition = "text")
+    private String jobDescription;
+
     @Column(insertable = false, columnDefinition = "tinyint(1) default 0 not null comment '0 for running 1 for paused'")
     private Boolean paused;
 
-    @Column(insertable = false, columnDefinition = "tinyint(1) default 1 not null comment '1 for concurrent 0 for non-concurrent'")
+    @Column(columnDefinition = "tinyint(1) default 1 not null comment '1 for concurrent 0 for non-concurrent'")
     private Boolean concurrent;
-
-    private String jobDescription;
 }

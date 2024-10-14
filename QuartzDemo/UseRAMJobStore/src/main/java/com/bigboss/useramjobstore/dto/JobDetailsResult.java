@@ -10,15 +10,17 @@ import lombok.Data;
 @Data
 public class JobDetailsResult {
 
-    private String jobClassName;
-
     private String jobName;
 
     private String jobGroup;
 
+    private String invokeTarget;
+
     private String cronExpression;
 
-    private String jobData;
-
     private String jobDescription;
+
+    private Boolean concurrent;
+
+    private Boolean paused;
 }
