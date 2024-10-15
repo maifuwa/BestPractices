@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 /**
  * @author: maifuwa
  * @date: 2024/10/12 15:05
- * @description:
+ * @description: 用户持久层
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {

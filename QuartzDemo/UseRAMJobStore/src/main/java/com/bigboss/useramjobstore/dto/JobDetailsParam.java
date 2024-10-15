@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.Length;
 /**
  * @author: maifuwa
  * @date: 2024/10/11 14:49
- * @description:
+ * @description: 定时任务详情参数
  */
 @Data
 public class JobDetailsParam {

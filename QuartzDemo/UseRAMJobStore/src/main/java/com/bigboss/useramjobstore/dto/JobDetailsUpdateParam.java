@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * @author: maifuwa
  * @date: 2024/10/11 15:22
- * @description:
+ * @description: 定时任务详情更新参数
  */
 @Data
 public class JobDetailsUpdateParam {

@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 /**
  * @author: maifuwa
  * @date: 2024/10/14 10:35
- * @description:
+ * @description: invokeTarget 解析工具类
  */
 public class JobInvokeUtil {
 
@@ -19,7 +19,7 @@ public class JobInvokeUtil {
         Object[] methodParams = getMethodParams(invokeTarget);
 
         Object bean = SpringUtil.getBean(beanName);
-        Method method = bean.getClass().getMethod(methodName, Stream.of(methodParams).map(Object::getClass).toArray(Class[]::new));
+        Method method = bean.getClass().getMethod(methodName, getMethodParamTypes(methodParams));
         method.invoke(bean, methodParams);
     }
 
@@ -55,5 +55,9 @@ public class JobInvokeUtil {
             return tmp;
         }
         return param;
+    }
+
+    public static Class<?>[] getMethodParamTypes(Object[] methodParams) {
+        return Stream.of(methodParams).map(Object::getClass).toArray(Class[]::new);
     }
 }

@@ -4,13 +4,12 @@ import com.bigboss.useramjobstore.common.ConcisePage;
 import com.bigboss.useramjobstore.dto.JobDetailsParam;
 import com.bigboss.useramjobstore.dto.JobDetailsResult;
 import com.bigboss.useramjobstore.dto.JobDetailsUpdateParam;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.quartz.SchedulerException;
 
 /**
  * @author: maifuwa
  * @date: 2024/10/11 10:53
- * @description:
+ * @description: 定时任务服务
  */
 public interface ScheduleService {
 

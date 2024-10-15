@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author: maifuwa
  * @date: 2024/10/11 11:26
- * @description:
+ * @description: quartz Scheduler工具类
  */
 @Slf4j
 @Component

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author: maifuwa
  * @date: 2024/10/14 21:22
- * @description:
+ * @description: 定时任务异常处理切面
  */
 @Slf4j
 @Aspect

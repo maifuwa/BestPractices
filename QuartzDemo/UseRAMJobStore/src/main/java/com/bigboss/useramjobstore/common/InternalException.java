@@ -5,7 +5,7 @@ import lombok.Getter;
 /**
  * @author: maifuwa
  * @date: 2024/10/14 20:51
- * @description:
+ * @description: 内部异常
  */
 @Getter
 public class InternalException extends RuntimeException {

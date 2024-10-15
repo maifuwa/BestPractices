@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * @author: maifuwa
  * @date: 2024/10/11 16:00
- * @description:
+ * @description: 定时任务详情查询结果
  */
 @Data
 public class JobDetailsResult {

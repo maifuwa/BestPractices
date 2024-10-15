@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author: maifuwa
  * @date: 2024/10/11 14:38
- * @description:
+ * @description: 普通任务
  */
 @Slf4j
 @Component

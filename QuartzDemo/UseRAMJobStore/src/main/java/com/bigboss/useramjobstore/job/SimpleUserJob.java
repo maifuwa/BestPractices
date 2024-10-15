@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author: maifuwa
  * @date: 2024/10/14 14:28
- * @description:
+ * @description: 操作数据库任务
  */
 @Slf4j
 @Component

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 /**
  * @author: maifuwa
  * @date: 2024/10/11 10:58
- * @description: JobDetails
+ * @description: 任务详情
  */
 @Data
 @Builder

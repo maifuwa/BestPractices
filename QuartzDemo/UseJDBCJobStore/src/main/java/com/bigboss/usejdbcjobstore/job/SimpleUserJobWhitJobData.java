@@ -3,7 +3,6 @@ package com.bigboss.usejdbcjobstore.job;
 import com.bigboss.usejdbcjobstore.domain.User;
 import com.bigboss.usejdbcjobstore.repository.UserRepository;
 import com.bigboss.usejdbcjobstore.util.JsonUtil;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.SneakyThrows;

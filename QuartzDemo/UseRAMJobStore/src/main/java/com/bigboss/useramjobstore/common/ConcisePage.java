@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * @author: maifuwa
  * @date: 2024/10/11 16:21
- * @description:
+ * @description: 简洁分页包装
  */
 public record ConcisePage<T>(List<T> content, int pageNumber, long totalPages) {
 

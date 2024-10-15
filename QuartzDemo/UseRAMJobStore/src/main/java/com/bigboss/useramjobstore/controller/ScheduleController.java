@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * @author: maifuwa
  * @date: 2024/10/11 10:52
- * @description:
+ * @description: 定时任务控制器
  */
 @Validated
 @RestController

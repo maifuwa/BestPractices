@@ -38,6 +38,10 @@ public class GlobalException extends RuntimeException {
         return new GlobalException(message, cause);
     }
 
+    public static GlobalException badRequest(String message) {
+        return new GlobalException(HttpStatus.BAD_REQUEST.value(), message);
+    }
+
     public static GlobalException badRequest(String message, Throwable cause) {
         return new GlobalException(HttpStatus.BAD_REQUEST.value(), message, cause);
     }

@@ -8,6 +8,7 @@ import com.bigboss.useramjobstore.dto.JobDetailsResult;
 import com.bigboss.useramjobstore.dto.JobDetailsUpdateParam;
 import com.bigboss.useramjobstore.repository.JobDetailsRepository;
 import com.bigboss.useramjobstore.service.ScheduleService;
+import com.bigboss.useramjobstore.util.JobInvokeUtil;
 import com.bigboss.useramjobstore.util.ScheduleUtil;
 import com.bigboss.useramjobstore.util.SpringUtil;
 import jakarta.annotation.PostConstruct;
@@ -28,7 +29,7 @@ import java.util.Optional;
 /**
  * @author: maifuwa
  * @date: 2024/10/11 10:53
- * @description:
+ * @description: 定时任务服务实现
  */
 @Transactional
 @Slf4j
@@ -56,9 +57,19 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public void addJob(JobDetailsParam jobDetailsParam) throws SchedulerException {
+        addJobInspection(jobDetailsParam.getInvokeTarget());
+
         JobDetails jobDetails = SpringUtil.copyBean(jobDetailsParam, JobDetails.class);
         jobDetailsRepository.save(jobDetails);
         ScheduleUtil.addJob(jobDetails);
+    }
+
+    private boolean addJobInspection(String invokeTarget) {
+        if (!SpringUtil.isBeanHasMethod(JobInvokeUtil.getBeanName(invokeTarget), JobInvokeUtil.getMethodName(invokeTarget),
+                JobInvokeUtil.getMethodParamTypes(JobInvokeUtil.getMethodParams(invokeTarget)))) {
+            throw GlobalException.badRequest("invokeTarget 配置错误");
+        }
+        return true;
     }
 
     @Override
@@ -105,6 +116,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         Optional.ofNullable(jobDetailsUpdateParam.getNewInvokeTarget())
                 .filter(StringUtils::hasText)
+                .filter(this::addJobInspection)
                 .ifPresent(jobDetails::setInvokeTarget);
 
         Optional.ofNullable(jobDetailsUpdateParam.getNewCronExpression())

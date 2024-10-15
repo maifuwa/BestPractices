@@ -12,7 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author: maifuwa
  * @date: 2024/10/14 10:34
- * @description:
+ * @description: 并发执行的定时任务(默认)
  */
 @Setter
 public class QuartzJobExecution extends QuartzJobBean {
@@ -24,9 +24,9 @@ public class QuartzJobExecution extends QuartzJobBean {
         try {
             JobInvokeUtil.invokeMethod(invokeTarget);
         } catch (NoSuchBeanDefinitionException | NoSuchMethodException | IllegalAccessException e) {
-            throw new JobExecutionException("invokeTarget 配置错误", e);
+            throw new JobExecutionException("invokeTarget 配置错误", e); // should be caught by ScheduleServiceImpl, done yet
         } catch (InvocationTargetException e) {
-            // aop will handle this exception
+            throw new JobExecutionException("业务执行失败", e); // should be caught by aop, done yet
         }
     }
 }
