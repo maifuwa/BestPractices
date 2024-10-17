@@ -1,0 +1,20 @@
+services:
+  postgres_one:
+    image: postgres:16.4
+    container_name: postgres_one
+    environment:
+      POSTGRES_USER: mybatis_flex_one
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mybatis_flex_one
+    ports:
+      - "5432:5432"
+
+  postgres_two:
+    image: postgres:16.4
+    container_name: postgres_two
+    environment:
+      POSTGRES_USER: mybatis_flex_two
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mybatis_flex_two
+    ports:
+      - "5433:5432"
