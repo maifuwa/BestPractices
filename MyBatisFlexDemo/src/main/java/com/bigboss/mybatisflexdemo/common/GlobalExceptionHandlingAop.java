@@ -14,6 +14,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -92,7 +93,7 @@ public class GlobalExceptionHandlingAop {
         return constraintViolationPath.substring(constraintViolationPath.lastIndexOf('.') + 1);
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ExceptionHandler({HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class})
     public CommonResult<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         return CommonResult.failed(HttpStatus.BAD_REQUEST.value(), "参数解析失败" + e.getMessage());
     }

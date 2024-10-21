@@ -15,7 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 商品 实体类。
+ * 订单 实体类。
  *
  * @author maifu
  * @since 2024-10-21
@@ -24,8 +24,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(value = "goods", dataSource = "postgres_one")
-public class Goods implements Serializable {
+@Table(value = "goods_order", dataSource = "postgres_two")
+public class GoodsOrder implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -34,14 +34,19 @@ public class Goods implements Serializable {
     private Integer id;
 
     /**
-     * 商品名字
+     * 商品
      */
-    private String name;
+    private Integer goodsId;
 
     /**
-     * 价格
+     * 总价
      */
-    private BigDecimal price;
+    private BigDecimal totalPrice;
+
+    /**
+     * 个数
+     */
+    private Integer number;
 
     /**
      * 逻辑删除字段
