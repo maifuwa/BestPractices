@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class JobExceptionHandleAop {
 
-    @Pointcut("execution(public void com.bigboss.useramjobstore.job.*.execute(..))")
+    @Pointcut("execution(public void com.bigboss.useramjobstore.job.*.*(..))")
     public void allRealJob() {
     }
 
