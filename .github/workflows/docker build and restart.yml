@@ -4,12 +4,40 @@ on:
   workflow_dispatch:
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - uses: actions/checkout@v4
+
+      - name: Get jar version
+        run: |
+          cd MyBatisFlexDemo
+          echo "VERSION=$(./mvnw -q -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec)" >> $GITHUB_ENV
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: MyBatisFlexDemo
+          file: MyBatisFlexDemo/doc/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/mybatis-flex-demo:${{ env.VERSION }},${{ secrets.DOCKERHUB_USERNAME }}/mybatis-flex-demo:latest
+          build-args: |
+            APP_VERSION=${{ env.VERSION }}
+
+      - name: ssh to server
+        user: cross-the-world/ssh-scp-ssh-pipelines@latest
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          first_ssh: |
+            cd /home/${{ secrets.USERNAME }}/BestPractices/MyBatisFlexDemo
+            docker-compose up -d --pull always
+            docker image prune

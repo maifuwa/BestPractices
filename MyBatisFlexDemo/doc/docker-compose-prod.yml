@@ -24,11 +24,7 @@ services:
       - ./postgres_two_schema.sql:/docker-entrypoint-initdb.d/init.sql
 
   mybatis_flex_demo:
-    build:
-      context: ../
-      dockerfile: ./doc/Dockerfile
-      args:
-        JAR_VERSION: 1.0.0
+    image: maifuwa/mybatis-flex-demo:1.0.0
     container_name: mybatis_flex_demo
     depends_on:
       - postgres_one
