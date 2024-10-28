@@ -1,8 +1,8 @@
 package com.bigboss.useramjobstore.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -75,21 +75,31 @@ public class JsonUtil {
     }
 
     /**
-     * 创建 empty ObjectNode
+     * 创建 empty JsonNode
      *
      * @return ObjectNode
      */
-    public static ObjectNode createObjectNode() {
+    public static JsonNode createJsonNode() {
         return objectMapper.createObjectNode();
     }
 
     /**
-     * 将pojo或str转为ObjectNode
+     * 将str转为JsonNode
      *
-     * @param obj pojo或str
-     * @return ObjectNode
+     * @param str str
+     * @return JsonNode
      */
-    public static ObjectNode toObjectNode(Object obj) {
+    public static JsonNode toJsonNode(String str) throws JsonProcessingException {
+        return objectMapper.readTree(str);
+    }
+
+    /**
+     * 将pojo转为JsonNode
+     *
+     * @param obj pojo
+     * @return JsonNode
+     */
+    public static JsonNode toJsonNode(Object obj) {
         return objectMapper.valueToTree(obj);
     }
 
